@@ -13,6 +13,7 @@ architecture tb_i2c_master_arch of tb_i2c_master is
         port(
             clock: in std_logic;
             reset: in std_logic;
+            enable: in std_logic;
             read_write: in std_logic;
             mosi_data: in std_logic_vector(7 downto 0);
             register_address: in std_logic_vector(7 downto 0);
@@ -24,6 +25,7 @@ architecture tb_i2c_master_arch of tb_i2c_master is
 
     signal clock: std_logic;
     signal reset: std_logic;
+    signal enable: std_logic;
     signal read_write: std_logic;
     signal mosi_data: std_logic_vector(7 downto 0);
 
@@ -40,6 +42,7 @@ begin
         port map(
             clock => clock,
             reset => reset,
+            enable => enable,
             read_write => read_write,
             mosi_data => mosi_data,
             register_address => register_address,
@@ -53,6 +56,7 @@ begin
     begin
         clock <= '0';
         reset <= '0';
+        enable <= '0';
         read_write <= '0';
         mosi_data <= "00000011";
         wait for 50 ps;
@@ -62,6 +66,7 @@ begin
             wait for 10 ps;
             i := i + 2;
         end loop;
+        enable <= '1';
         read_write <= '1';
         mosi_data <= "00110000";
         i := 0;

@@ -16,7 +16,7 @@ entity i2c_master is
         -- Active high reset
         reset: in std_logic;
         -- I2C master module enable
-        -- enable: in std_logic;
+        enable: in std_logic;
         -- (0) write, (1) read
         read_write: in std_logic;
         -- Data to be written to a register during an I2C write operation
@@ -37,7 +37,9 @@ end i2c_master;
 architecture i2c_master_arq of i2c_master is
 
     constant IDLE: std_logic_vector(1 downto 0) := "00";
+    constant START: std_logic_vector(1 downto 0) := "01";
     signal state: std_logic_vector(1 downto 0); -- FSM state
+
     signal saved_slave_address: std_logic_vector(ADDRESS_WIDTH downto 0);
     signal saved_register_address: std_logic_vector(REGISTER_WIDTH-1 downto 0);
     signal saved_mosi_data: std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -61,6 +63,13 @@ begin
 
                         serial_data <= '1'; -- Hold SDA high
                         serial_clock <= '1'; -- Hold SCL high
+
+                        if enable = '1' then
+                            state <= START; -- Proceed to START
+                        else
+                            state <= IDLE; -- Stay IDLE
+                        end if;
+
                     when others =>
                         state <= IDLE;
                 end case;
