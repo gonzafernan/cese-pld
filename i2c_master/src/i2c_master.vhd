@@ -24,9 +24,13 @@ entity i2c_master is
         -- Register where data is read/written
         register_address: in std_logic_vector(REGISTER_WIDTH-1 downto 0);
         -- Slave I2C address
-        slave_address: in std_logic_vector(ADDRESS_WIDTH-1 downto 0)
+        slave_address: in std_logic_vector(ADDRESS_WIDTH-1 downto 0);
         -- Data to be read during a I2C read operation
         -- miso_data: out std_logic_vector(DATA_WIDTH-1 downto 0);
+        -- External serial data (SDA)
+        serial_data: inout std_logic;
+        -- External serial clock (SCL)
+        serial_clock: inout std_logic
     );
 end i2c_master;
 
@@ -54,6 +58,9 @@ begin
                         saved_register_address <= register_address; -- Save target register address
                         saved_mosi_data <= mosi_data; -- Save data to be written (valid in write op)
                         saved_read_write <= read_write; -- Save read/write status bit
+
+                        serial_data <= '1'; -- Hold SDA high
+                        serial_clock <= '1'; -- Hold SCL high
                     when others =>
                         state <= IDLE;
                 end case;
