@@ -1,5 +1,6 @@
 library IEEE;
 use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 use std.env.finish;
 
 entity tb_i2c_master is
@@ -11,19 +12,22 @@ architecture tb_i2c_master_arch of tb_i2c_master is
     component i2c_master is
         port(
             clock: in std_logic;
-            reset: in std_logic
+            reset: in std_logic;
+            slave_address: in std_logic_vector(6 downto 0)
         );
     end component;
 
     signal clock: std_logic;
     signal reset: std_logic;
+    constant slave_address: std_logic_vector(6 downto 0) := std_logic_vector(to_unsigned(16#42#, 7));
 
 begin
 
     DUT: i2c_master
         port map(
             clock => clock,
-            reset => reset
+            reset => reset,
+            slave_address => slave_address
         );
 
     process
