@@ -236,7 +236,7 @@ begin
                             when "11" =>
                                 if bit_counter = "00000000" then
                                     state <= CHECK_ACK;
-                                    next_state <= IDLE;
+                                    next_state <= SEND_STOP;
                                     next_serial_data <= '0';
                                     bit_counter <= std_logic_vector(to_unsigned(8, 8));
                                     serial_data_reg <= '0';
@@ -246,6 +246,27 @@ begin
                                 process_counter <= "00";
                             when others =>
                                 state <= IDLE;
+                        end case;
+
+                    when SEND_STOP =>
+                        case process_counter is
+                            when "00" =>
+                                serial_clock_reg <= '1';
+                                process_counter <= "01";
+                            when "01" =>
+                                -- check for clock stretching
+                                if serial_clock /= '0' then
+                                    acknowledge <= '0';
+                                    process_counter <= "10";
+                                end if;
+                            when "10" =>
+                                serial_data_reg <= '1';
+                                process_counter <= "11";
+                            when "11" =>
+                                state <= IDLE;
+                            when others =>
+                                state <= IDLE;
+
                         end case;
 
                     when others =>
