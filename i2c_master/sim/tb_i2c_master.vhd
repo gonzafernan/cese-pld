@@ -18,8 +18,8 @@ architecture tb_i2c_master_arch of tb_i2c_master is
             mosi_data: in std_logic_vector(7 downto 0);
             register_address: in std_logic_vector(7 downto 0);
             slave_address: in std_logic_vector(6 downto 0);
-            serial_data: inout std_logic;
-            serial_clock: inout std_logic
+            serial_clock: inout std_logic;
+            serial_data: inout std_logic
         );
     end component;
 
@@ -30,10 +30,11 @@ architecture tb_i2c_master_arch of tb_i2c_master is
     signal mosi_data: std_logic_vector(7 downto 0);
 
     -- External SDA and SCL
-    signal serial_data: std_logic;
     signal serial_clock: std_logic;
+    signal serial_data: std_logic;
 
-    constant slave_address: std_logic_vector(6 downto 0) := std_logic_vector(to_unsigned(16#42#, 7));
+    -- constant slave_address: std_logic_vector(6 downto 0) := std_logic_vector(to_unsigned(16#42#, 7));
+    constant slave_address: std_logic_vector(6 downto 0) := "1101001";
     constant register_address: std_logic_vector(7 downto 0) := "01010101";
 
 begin
@@ -47,8 +48,8 @@ begin
             mosi_data => mosi_data,
             register_address => register_address,
             slave_address => slave_address,
-            serial_data => serial_data,
-            serial_clock => serial_clock
+            serial_clock => serial_clock,
+            serial_data => serial_data
         );
 
     process
@@ -67,10 +68,10 @@ begin
             i := i + 2;
         end loop;
         enable <= '1';
-        read_write <= '1';
+        read_write <= '0'; -- write op
         mosi_data <= "00110000";
         i := 0;
-        while (i < 255) loop
+        while (i < 512) loop
             clock <= not clock;
             wait for 10 ps;
             i := i + 2;
