@@ -18,8 +18,9 @@ architecture tb_i2c_master_arch of tb_i2c_master is
             mosi_data: in std_logic_vector(7 downto 0);
             register_address: in std_logic_vector(7 downto 0);
             slave_address: in std_logic_vector(6 downto 0);
-            serial_clock: inout std_logic;
-            serial_data: inout std_logic
+            o_state: out std_logic_vector(2 downto 0);
+            serial_clock: out std_logic;
+            serial_data: out std_logic
         );
     end component;
 
@@ -28,6 +29,7 @@ architecture tb_i2c_master_arch of tb_i2c_master is
     signal enable: std_logic;
     signal read_write: std_logic;
     signal mosi_data: std_logic_vector(7 downto 0);
+    signal i2c_state: std_logic_vector(2 downto 0);
 
     -- External SDA and SCL
     signal serial_clock: std_logic;
@@ -48,6 +50,7 @@ begin
             mosi_data => mosi_data,
             register_address => register_address,
             slave_address => slave_address,
+            o_state => i2c_state,
             serial_clock => serial_clock,
             serial_data => serial_data
         );

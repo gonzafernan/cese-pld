@@ -7,7 +7,7 @@ use IEEE.numeric_std.all;
 
 entity prescaler is
     generic(
-        PRESCALE: integer := 5
+        PRESCALE: integer := 4
     );
     port(
         clock: in std_logic;    -- Clock input

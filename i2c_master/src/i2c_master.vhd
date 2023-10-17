@@ -28,10 +28,14 @@ entity i2c_master is
         slave_address: in std_logic_vector(ADDRESS_WIDTH-1 downto 0);
         -- Data to be read during a I2C read operation
         -- miso_data: out std_logic_vector(DATA_WIDTH-1 downto 0);
+        -- Debug ports
+        o_state: out std_logic_vector(2 downto 0);
         -- External serial clock (SCL)
-        serial_clock: inout std_logic;
+        -- serial_clock: inout std_logic;
+        serial_clock: out std_logic;
         -- External serial data (SDA)
-        serial_data: inout std_logic
+        serial_data: out std_logic
+        -- serial_data: inout std_logic
     );
 end i2c_master;
 
@@ -63,8 +67,13 @@ architecture i2c_master_arq of i2c_master is
 begin
 
     -- Open-drain SDA
-    serial_data <= 'Z' when serial_data_reg = '1' else '0'; -- 0/1 to 0/Z
-    serial_clock <= 'Z' when serial_clock_reg = '1' else '0'; -- 0/1 to 0/Z
+    -- serial_data <= 'Z' when serial_data_reg = '1' else '0'; -- 0/1 to 0/Z
+    -- serial_clock <= 'Z' when serial_clock_reg = '1' else '0'; -- 0/1 to 0/Z
+    serial_data <= '1' when serial_data_reg = '1' else '0'; -- 0/1 to 0/Z
+    serial_clock <= '1' when serial_clock_reg = '1' else '0'; -- 0/1 to 0/Z
+    
+    -- Debug ports
+    o_state <= state;
 
     process(clock)
     begin
@@ -130,9 +139,9 @@ begin
                                 serial_clock_reg <= '1'; -- SCL high
                             when "01" =>
                                 -- chck for clock stretching
-                                if serial_clock /= '0' then
-                                    process_counter <= "10";
-                                end if;
+                                -- if serial_clock /= '0' then
+                                process_counter <= "10";
+                                --end if;
                             when "10" =>
                                 serial_clock_reg <= '0';
                                 process_counter <= "11";
@@ -159,10 +168,10 @@ begin
                                 process_counter <= "01";
                             when "01" =>
                                 -- check for clock stretching
-                                if serial_clock /= '0' then
-                                    acknowledge <= '0';
-                                    process_counter <= "10";
-                                end if;
+                                -- if serial_clock /= '0' then
+                                acknowledge <= '0';
+                                process_counter <= "10";
+                                -- end if;
                             when "10" =>
                                 serial_clock_reg <= '0';
                                 process_counter <= "11";
@@ -190,10 +199,10 @@ begin
                                 process_counter <= "01";
                             when "01" =>
                                 -- check for clock stretching
-                                if serial_clock /= '0' then
-                                    acknowledge <= '0';
-                                    process_counter <= "10";
-                                end if;
+                                -- if serial_clock /= '0' then
+                                acknowledge <= '0';
+                                process_counter <= "10";
+                                -- end if;
                             when "10" =>
                                 serial_clock_reg <= '0';
                                 bit_counter <= std_logic_vector(to_unsigned(to_integer(unsigned(bit_counter)) - 1, 8));
@@ -225,10 +234,10 @@ begin
                                 process_counter <= "01";
                             when "01" =>
                                 -- check for clock stretching
-                                if serial_clock /= '0' then
-                                    acknowledge <= '0';
-                                    process_counter <= "10";
-                                end if;
+                                -- if serial_clock /= '0' then
+                                acknowledge <= '0';
+                                process_counter <= "10";
+                                -- end if;
                             when "10" =>
                                 serial_clock_reg <= '0';
                                 bit_counter <= std_logic_vector(to_unsigned(to_integer(unsigned(bit_counter)) - 1, 8));
@@ -255,10 +264,10 @@ begin
                                 process_counter <= "01";
                             when "01" =>
                                 -- check for clock stretching
-                                if serial_clock /= '0' then
-                                    acknowledge <= '0';
-                                    process_counter <= "10";
-                                end if;
+                                -- if serial_clock /= '0' then
+                                acknowledge <= '0';
+                                process_counter <= "10";
+                                -- end if;
                             when "10" =>
                                 serial_data_reg <= '1';
                                 process_counter <= "11";
